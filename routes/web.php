@@ -150,11 +150,11 @@ Route::middleware(['authcheck'])->group(function () {
     Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
     // Permission Assignment (Form + Store)
-    Route::get('/permission-assign', [PermissionAssignController::class, 'show'])->name('permissions.assign-form');
-    Route::post('/permission-assign', [PermissionAssignController::class, 'store'])->name('permissions.assign');
-
-    Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions']);
+   Route::get('/permission-assign', [PermissionAssignController::class, 'index'])->name('permissions.assign-form');
+Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])->name('permissions.get');
 Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])->name('permissions.update');
+
+
 
     // Route List Page
     Route::get('/route-list', [RouteListController::class, 'index'])->name('routes.index');

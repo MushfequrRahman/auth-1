@@ -7,18 +7,27 @@
     $isGuestPage = in_array($currentRoute, ['login', 'login.show', 'register', 'register.show']);
 
     $modules = collect();
-    $permissions = [];
+    $permissions = []; // এখন আমরা permission slug না নিয়ে module_id + type ব্যবহার করবো
 
     if ($user && !$isGuestPage) {
         $modules = DB::table('modules')->get();
 
+        // user_module_permission টেবিল থেকে user এর module_id এবং type সংগ্রহ
+        // এখানে আমরা permission slug নাই, তাই module_id এবং type এর অ্যারে পাবো
         $permissions = DB::table('user_module_permission')
-            ->join('permissions', 'user_module_permission.permission_id', '=', 'permissions.id')
-            ->where('user_module_permission.user_id', $user->id)
-            ->pluck('permissions.slug')
+            ->where('user_id', $user->id)
+            ->get()
+            ->groupBy('module_id')
+            ->map(function ($items) {
+                return $items->pluck('type')->toArray();
+            })
             ->toArray();
     }
 @endphp
+
+
+
+
 
 @if($user && !$isGuestPage && count($permissions))
 <!-- Main Sidebar Container -->
@@ -56,7 +65,7 @@
                 </li>
 
                 {{-- Dynamic Modules --}}
-                {!! renderSidebarMenu($modules, null, $permissions) !!}
+                {!! renderSidebarMenu($modules, $permissions) !!}
 
                 <li class="nav-item">
                     <a href="{{ route('logout') }}" class="nav-link">

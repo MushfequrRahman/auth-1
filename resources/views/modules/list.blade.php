@@ -2,47 +2,35 @@
 @section('title', 'Module List')
 
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-@endif
+<h2>Module List</h2>
 
-<h4 class="mb-3">Module List</h4>
-
-<table class="table table-bordered table-striped">
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>#</th>
-            <th>Module Name</th>
+            <th>Name</th>
             <th>Route</th>
             <th>Icon</th>
             <th>Parent</th>
-            <th>Action</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @forelse($modules as $index => $mod)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $mod->name }}</td>
-            <td>{{ $mod->route ?? '-' }}</td>
-            <td><i class="{{ $mod->icon }}"></i> {{ $mod->icon }}</td>
-            <td>
-                @php
-                    $parent = $modules->firstWhere('id', $mod->parent_id);
-                @endphp
-                {{ $parent->name ?? '-' }}
-            </td>
-            <td>
-                <a href="{{ route('modules.edit', $mod->id) }}" class="btn btn-sm btn-primary">Edit</a>
-            </td>
-        </tr>
+        @forelse($modules as $module)
+            <tr>
+                <td>{{ $module->name }}</td>
+                <td>{{ $module->route }}</td>
+                <td><i class="{{ $module->icon }}"></i> {{ $module->icon }}</td>
+                <td>{{ optional($module->parent)->name }}</td>
+                <td>
+                    <a href="{{ route('modules.edit', $module->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route('modules.destroy', $module->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this module?')">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
         @empty
-        <tr>
-            <td colspan="6" class="text-center">No modules found.</td>
-        </tr>
+            <tr><td colspan="5">No modules found.</td></tr>
         @endforelse
     </tbody>
 </table>

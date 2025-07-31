@@ -1,95 +1,126 @@
 @extends('layouts.master')
-@section('title', 'Assign Permissions')
 
 @section('content')
-<h3>Assign Permissions</h3>
+<div class="container">
+    <h3>Assign Permissions to User</h3>
 
-<div class="mb-3">
-    <label for="user_id" class="form-label">Select User:</label>
-    <select name="user_id" id="user_id" class="form-select" required>
-        <option value="">-- Select User --</option>
-        @foreach($users as $user)
-        <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
-        @endforeach
-    </select>
+    <form id="permissionForm">
+        <div class="form-group mb-3">
+            <label for="user_id">Select User</label>
+            <select name="user_id" id="user_id" class="form-control">
+                <option value="">-- Select User --</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div id="permission-section" class="mt-4" style="display:none;">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50%;">Module Name</th>
+                        <th style="width: 50%;">Permissions (slug)</th>
+                    </tr>
+                </thead>
+                <!-- <tbody>
+                    @foreach ($modules as $module)
+                        <tr>
+                            <td><strong>{{ $module->name }}</strong></td>
+                            <td>
+                                @if(isset($permissionsByModule[$module->id]) && count($permissionsByModule[$module->id]) > 0)
+                                    @foreach ($permissionsByModule[$module->id] as $permission)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input permission-checkbox" type="checkbox"
+                                                name="module_ids[]" value="{{ $permission->id }}" id="perm_{{ $permission->id }}">
+                                            <label class="form-check-label" for="perm_{{ $permission->id }}">
+                                                {{ $permission->slug }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">No permissions</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody> -->
+                <tbody>
+    @foreach ($modules as $module)
+        @if(!isset($permissionsByModule[$module->id]) || count($permissionsByModule[$module->id]) == 0)
+            @continue
+        @endif
+
+        <tr>
+            <td><strong>{{ $module->name }}</strong></td>
+            <td>
+                @foreach ($permissionsByModule[$module->id] as $permission)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input permission-checkbox" type="checkbox"
+                            name="module_ids[]" value="{{ $permission->id }}" id="perm_{{ $permission->id }}">
+                        <label class="form-check-label" for="perm_{{ $permission->id }}">
+                            {{ $permission->slug }}
+                        </label>
+                    </div>
+                @endforeach
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
+            </table>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Save Permissions</button>
+    </form>
 </div>
 
-<div id="permissionTable" class="mt-3">
-    <p class="text-muted">Select a user to view permissions.</p>
-</div>
-@endsection
-
-@section('scripts')
 <script>
-    const modules = @json($modules);
-    const allPermissions = @json($permissions);
-
     document.getElementById('user_id').addEventListener('change', function () {
         const userId = this.value;
-        const permissionTable = document.getElementById('permissionTable');
+        const checkboxes = document.querySelectorAll('.permission-checkbox');
+        checkboxes.forEach(cb => cb.checked = false);
+
+        if (userId) {
+            document.getElementById('permission-section').style.display = 'block';
+
+            fetch(`/get-user-permissions?user_id=${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(id => {
+                        const checkbox = document.getElementById('perm_' + id);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                });
+        } else {
+            document.getElementById('permission-section').style.display = 'none';
+        }
+    });
+
+    document.getElementById('permissionForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const userId = document.getElementById('user_id').value;
         if (!userId) {
-            permissionTable.innerHTML = '<p class="text-muted">Select a user to view permissions.</p>';
+            alert('Please select a user.');
             return;
         }
 
-        fetch(`/get-user-permissions?user_id=${userId}`)
-            .then(res => res.json())
-            .then(assignedPermissions => {
-                let html = `<table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Module</th>
-                            <th>Permission</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
+        const checkedBoxes = document.querySelectorAll('.permission-checkbox:checked');
+        const moduleIds = Array.from(checkedBoxes).map(cb => cb.value);
 
-                modules.forEach(module => {
-                    const perms = allPermissions.filter(p => p.module_id === module.id);
-                    if (perms.length === 0) return;
-
-                    perms.forEach((perm, index) => {
-                        html += `<tr>`;
-                        if (index === 0) {
-                            html += `<td rowspan="${perms.length}">${module.name}</td>`;
-                        }
-                        const checked = assignedPermissions.includes(perm.id) ? 'checked' : '';
-                        html += `<td>
-                            <label>
-                                <input type="checkbox" class="perm-check"
-                                       data-user="${userId}"
-                                       data-module="${module.id}"
-                                       data-perm="${perm.id}"
-                                       ${checked}>
-                                ${perm.name}
-                            </label>
-                        </td></tr>`;
-                    });
-                });
-
-                html += `</tbody></table>`;
-                permissionTable.innerHTML = html;
-
-                document.querySelectorAll('.perm-check').forEach(input => {
-                    input.addEventListener('change', function () {
-                        const payload = {
-                            user_id: this.dataset.user,
-                            module_id: this.dataset.module,
-                            permission_id: this.dataset.perm,
-                            checked: this.checked
-                        };
-
-                        fetch('/update-permission', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': `{{ csrf_token() }}`
-                            },
-                            body: JSON.stringify(payload)
-                        });
-                    });
-                });
-            });
+        fetch('/update-permission', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ user_id: userId, module_ids: moduleIds })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Permissions updated successfully!');
+        });
     });
 </script>
 @endsection

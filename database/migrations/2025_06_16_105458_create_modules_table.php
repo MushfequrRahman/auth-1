@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->integer('order')->default(0);
+            $table->string('name')->unique();                   // মডিউলের নাম
+            $table->string('slug')->unique();                   // URL-friendly slug
+            $table->enum('type', ['module', 'permission']);     // মডিউল টাইপ
+            $table->unsignedBigInteger('parent_id')->nullable();// parent module (for sub-permissions)
+            $table->integer('order')->default(0);               // মেনু অর্ডার
             $table->timestamps();
         });
     }

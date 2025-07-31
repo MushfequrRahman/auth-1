@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\DB;
 
 /**
- * Get all permissions (routes) of logged-in user
+ * Get all permissions (route slugs) of logged-in user from modules table
+ * যেখানে type='permission' এবং user-module relation আছে।
  */
 if (!function_exists('getUserRoutePermissions')) {
     function getUserRoutePermissions(): array
@@ -11,18 +12,19 @@ if (!function_exists('getUserRoutePermissions')) {
         $user = session('user');
         if (!$user) return [];
 
-        return cache()->remember("user_permissions_{$user->id}", 60, function () use ($user) {
+        return cache()->remember("user_permissions_{$user->id}", 1, function () use ($user) {
             return DB::table('user_module_permission')
-                ->join('permissions', 'user_module_permission.permission_id', '=', 'permissions.id')
+                ->join('modules', 'user_module_permission.module_id', '=', 'modules.id')
                 ->where('user_module_permission.user_id', $user->id)
-                ->pluck('permissions.slug')
+                ->where('modules.type', 'permission')
+                ->pluck('modules.slug')
                 ->toArray();
         });
     }
 }
 
 /**
- * Return breadcrumb module chain (if user has permission)
+ * Return breadcrumb module chain for a given route name if user has permission
  */
 if (!function_exists('findModuleChainByRoute')) {
     function findModuleChainByRoute($modules, string $routeName)
@@ -33,7 +35,7 @@ if (!function_exists('findModuleChainByRoute')) {
         if (!in_array($routeName, $permissions)) return collect();
 
         $modules = collect($modules);
-        $current = $modules->firstWhere('route', $routeName);
+        $current = $modules->firstWhere('slug', $routeName);
         if (!$current) return collect();
 
         $chain = [];
@@ -42,6 +44,7 @@ if (!function_exists('findModuleChainByRoute')) {
             $current = $modules->firstWhere('id', $current->parent_id);
         }
 
-        return collect(array_reverse($chain)); // parent → child
+        return collect(array_reverse($chain)); // parent → child order
     }
 }
+

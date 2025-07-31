@@ -1,7 +1,11 @@
 @extends('layouts.master')
-@section('title', 'Nested Module Sort')
+@section('title', 'All Modules')
 
 @section('content')
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>All Modules</h2>
+    <a href="{{ route('modules.create') }}" class="btn btn-primary">+ Add Module</a>
+</div>
 
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
@@ -11,22 +15,11 @@
     <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
 
-<div class="mb-4">
-    <form action="{{ route('modules.store') }}" method="POST" class="d-flex flex-wrap gap-2">
-        @csrf
-        <input type="text" name="name" placeholder="Module name" class="form-control mb-2" required>
-        <input type="text" name="route" placeholder="Route name (optional)" class="form-control mb-2">
-        <input type="text" name="icon" placeholder="FontAwesome Icon (e.g., fas fa-users)" class="form-control mb-2">
-        <button type="submit" class="btn btn-primary mb-2">Add Module</button>
-    </form>
-</div>
-
 <div class="dd" id="nestable">
     {!! renderModules($modules) !!}
 </div>
 
 <button id="saveOrder" class="btn btn-success mt-3">Save Order</button>
-
 @endsection
 
 @section('scripts')
