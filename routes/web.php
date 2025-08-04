@@ -101,6 +101,7 @@ use App\Http\Controllers\PermissionAssignController;
 | Public Routes (Guest only)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return redirect('/login');
 });
@@ -111,7 +112,6 @@ Route::middleware(['guestonly'])->group(function () {
 
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register.show');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
-    
 });
 
 /*
@@ -152,15 +152,15 @@ Route::middleware(['authcheck'])->group(function () {
     Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
     // Permission Assignment (Form + Store)
-   Route::get('/permission-assign', [PermissionAssignController::class, 'index'])->name('permissions.assign-form');
-Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])->name('permissions.get');
-Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])->name('permissions.update');
+    Route::get('/permission-assign', [PermissionAssignController::class, 'index'])->name('permissions.assign-form');
+    Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])->name('permissions.get');
+    Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])->name('permissions.update');
 
 
 
     // Route List Page
     Route::get('/route-list', [RouteListController::class, 'index'])->name('routes.index');
-//->middleware('checkpermission:roles.create')
+    //->middleware('checkpermission:roles.create')
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
