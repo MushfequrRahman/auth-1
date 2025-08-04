@@ -111,6 +111,7 @@ Route::middleware(['guestonly'])->group(function () {
 
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register.show');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
+    
 });
 
 /*
@@ -123,6 +124,7 @@ Route::middleware(['authcheck'])->group(function () {
     // Dashboard & Profile
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/user-list', [AuthController::class, 'user_list'])->name('user_list');
 
     // Role CRUD
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
