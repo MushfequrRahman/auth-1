@@ -62,10 +62,16 @@ class AuthController extends Controller
         return view('dashboard');
     }
     // Show user profile
-    
+
+    // public function user_list()
+    // {
+    //     $user_list = Session::get('user'); // custom auth system অনুযায়ী session থেকে ইউজার নিচ্ছি
+    //     return view('user_list', compact('user_list'));
+    // }
+
     public function user_list()
     {
-        $user_list = Session::get('user'); // custom auth system অনুযায়ী session থেকে ইউজার নিচ্ছি
+        $user_list = DB::table('users')->get(); // সকল ইউজার ডাটাবেজ থেকে নিচ্ছি
         return view('user_list', compact('user_list'));
     }
 

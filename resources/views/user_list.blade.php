@@ -20,12 +20,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>{{ $user_list->id }}</td>
-                    <td>{{ $user_list->name }}</td>
-                    <td>{{ $user_list->email }}</td>
-                    <td><a href="{{ route('permissions.assign-form', $user_list->id) }}" class="btn btn-sm btn-warning">Assign</a></td>
-                </tr>
+                @foreach ($user_list as $user)
+            <tr>
+                <td>{{ $user->id }}</td>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>
+                    <a href="{{ route('permissions.assign-form', ['user_id' => $user->id,'user_name' => $user->name]) }}" class="btn btn-sm btn-warning">Assign</a>
+                </td>
+            </tr>
+        @endforeach
             </tbody>
         </table>
     </div>

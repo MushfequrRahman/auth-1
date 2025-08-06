@@ -7,25 +7,27 @@ use Illuminate\Support\Facades\DB;
 
 class PermissionAssignController extends Controller
 {
-    public function index()
-{
-    $users = DB::table('users')->get();
+    public function index(Request $request)
+    {
+        $users = DB::table('users')->get();
+        $user_id = $request->query('user_id');
+        $user_name = $request->query('user_name');
 
-    $modules = DB::table('modules')
-        ->where('type', 'module')
-        ->where('slug', '!=', '#')
-        ->orderBy('order')
-        ->get();
+        $modules = DB::table('modules')
+            ->where('type', 'module')
+            ->where('slug', '!=', '#')
+            ->orderBy('order')
+            ->get();
 
-    $permissionsByModule = DB::table('modules')
-        ->where('type', 'permission')
-        ->where('slug', '!=', '#')
-        ->orderBy('order')
-        ->get()
-        ->groupBy('parent_id');
+        $permissionsByModule = DB::table('modules')
+            ->where('type', 'permission')
+            ->where('slug', '!=', '#')
+            ->orderBy('order')
+            ->get()
+            ->groupBy('parent_id');
 
-    return view('permission.assign', compact('users', 'modules', 'permissionsByModule'));
-}
+        return view('permission.assign', compact('users', 'user_id', 'user_name','modules', 'permissionsByModule'));
+    }
 
 
     public function getUserPermissions(Request $request)
@@ -57,12 +59,3 @@ class PermissionAssignController extends Controller
         return response()->json(['status' => 'success']);
     }
 }
-
-
-
-
-
-
-
-
-
