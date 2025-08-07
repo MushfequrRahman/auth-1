@@ -32,7 +32,9 @@ class ModuleController extends Controller
             'route'     => 'nullable|string|max:255',
             'icon'      => 'nullable|string|max:255',
             'order'     => 'nullable|integer',
+            
             'parent_id' => 'nullable|exists:modules,id',
+            'showinsidebar'     => 'nullable|integer',
         ]);
 
         DB::table('modules')->insert([
@@ -42,9 +44,11 @@ class ModuleController extends Controller
             'route'     => $request->route,
             'icon'      => $request->icon,
             'order'     => $request->order ?? 0,
+            
             'parent_id' => $request->parent_id,
             'created_at'=> now(),
             'updated_at'=> now(),
+            'show_in_sidebar'     => $request->showinsidebar ?? 0,
         ]);
 
         Cache::forget('modules'); // ক্যাশ ক্লিয়ার

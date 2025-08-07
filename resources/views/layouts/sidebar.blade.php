@@ -10,7 +10,7 @@
     $permissions = []; // এখন আমরা permission slug না নিয়ে module_id + type ব্যবহার করবো
 
     if ($user && !$isGuestPage) {
-        $modules = DB::table('modules')->get();
+        $modules = DB::table('modules')->where('show_in_sidebar', true)->get();
 
         // user_module_permission টেবিল থেকে user এর module_id এবং type সংগ্রহ
         // এখানে আমরা permission slug নাই, তাই module_id এবং type এর অ্যারে পাবো

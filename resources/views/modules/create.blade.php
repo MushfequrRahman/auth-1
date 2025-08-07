@@ -39,6 +39,11 @@
     </div>
 
     <div class="mb-3">
+        <label>Show in Sidebar:</label>
+        <input type="number" name="showinsidebar" class="form-control" value="0">
+    </div>
+
+    <div class="mb-3">
         <label>Parent Module:</label>
         <select name="parent_id" class="form-control">
             <option value="">None</option>

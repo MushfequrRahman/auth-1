@@ -72,7 +72,7 @@ class AuthController extends Controller
     public function user_list()
     {
         $user_list = DB::table('users')->get(); // সকল ইউজার ডাটাবেজ থেকে নিচ্ছি
-        return view('user_list', compact('user_list'));
+        return view('users.user_list', compact('user_list'));
     }
 
     public function logout()
