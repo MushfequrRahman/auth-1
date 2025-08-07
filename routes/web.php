@@ -95,6 +95,7 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\RouteListController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionAssignController;
+use App\Http\Controllers\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -160,6 +161,17 @@ Route::middleware(['authcheck'])->group(function () {
 
     // Route List Page
     Route::get('/route-list', [RouteListController::class, 'index'])->name('routes.index');
+
+    // Unit CRUD
+    
+        Route::get('/unit', [UnitController::class, 'index'])->name('unit.index');
+        Route::get('/unit/create', [UnitController::class, 'create'])->name('unit.create');
+        Route::post('/unit/store', [UnitController::class, 'store'])->name('unit.store');
+        Route::get('/unit/{id}/edit', [UnitController::class, 'edit'])->name('unit.edit');
+        Route::post('/unit/{id}/update', [UnitController::class, 'update'])->name('unit.update');
+        Route::delete('/unit/{id}', [UnitController::class, 'destroy'])->name('unit.destroy');
+   
+
     //->middleware('checkpermission:roles.create')
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

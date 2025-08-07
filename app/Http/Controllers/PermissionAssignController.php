@@ -9,9 +9,11 @@ class PermissionAssignController extends Controller
 {
     public function index(Request $request)
     {
-        $users = DB::table('users')->get();
         $user_id = $request->query('user_id');
         $user_name = $request->query('user_name');
+        
+        $users = DB::table('users')->get();
+        
 
         $modules = DB::table('modules')
             ->where('type', 'module')
