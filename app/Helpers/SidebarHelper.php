@@ -70,7 +70,7 @@ if (!function_exists('hasVisibleChildren')) {
 function renderSidebarMenu($modules, $permissions, $parentId = null)
 {
     $html = '';
-    $filtered = $modules->where('parent_id', $parentId);
+    $filtered = $modules->where('parent_id', $parentId)->sortBy('order');
 
     foreach ($filtered as $module) {
         $hasPermission = isset($permissions[$module->id]);

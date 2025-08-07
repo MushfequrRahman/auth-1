@@ -27,7 +27,7 @@ class ModuleController extends Controller
     {
         $request->validate([
             'name'      => 'required|unique:modules,name',
-            'slug'      => 'required|unique:modules,slug',
+            'slug'      => 'nullable|string|max:255',
             'type'      => 'required|in:module,permission',
             'route'     => 'nullable|string|max:255',
             'icon'      => 'nullable|string|max:255',
@@ -98,7 +98,7 @@ class ModuleController extends Controller
     {
         $request->validate([
             'name'      => 'required|unique:modules,name,' . $id,
-            'slug'      => 'required|unique:modules,slug,' . $id,
+            'slug'      => 'required',
             'type'      => 'required|in:module,permission',
             'order'     => 'nullable|integer',
             'parent_id' => 'nullable|exists:modules,id',
