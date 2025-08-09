@@ -63,17 +63,27 @@ Route::middleware(['authcheck'])->group(function () {
     Route::get('/modules/list', [ModuleController::class, 'list'])->name('modules.list');
     });
 
-    Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
-    Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
-    Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
-    Route::get('/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
-    Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
-    Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+    //Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+    //Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
+    //Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
+    //Route::get('/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
+    //Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
+    //Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
     // Permission Assignment (Form + Store)
-    Route::get('/permission-assign', [PermissionAssignController::class, 'index'])->name('permissions.assign-form');
-    Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])->name('permissions.get');
-    Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])->name('permissions.update');
+    // Route::get('/permission-assign', [PermissionAssignController::class, 'index'])->name('permissions.assign-form');
+    // Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])->name('permissions.get');
+    // Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])->name('permissions.update');
+
+    Route::middleware('check.permission:permissions.assign-form')->group(function () {
+    Route::get('/permission-assign', [PermissionAssignController::class, 'index'])
+        ->name('permissions.assign-form');
+    Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])
+        ->name('permissions.get');
+    Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])
+        ->name('permissions.update');
+});
+
 
 
 

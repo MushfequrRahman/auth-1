@@ -18,9 +18,7 @@
         <li class="nav-item">
             <a href="{{ route('routes.index') }}" class="nav-link">Route</a>
         </li>
-        <li class="nav-item">
-            <a href="{{ route('permissions.index') }}" class="nav-link">Permission</a>
-        </li>
+        
         <li class="nav-item">
             <a href="{{ route('permissions.assign-form') }}" class="nav-link">Permission Assign</a>
         </li>
