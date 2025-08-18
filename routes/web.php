@@ -40,7 +40,7 @@ Route::middleware(['authcheck'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::prefix('users')->middleware('check.permission:users.user_list')->group(function () {
-    Route::get('/users/user-list', [AuthController::class, 'user_list'])->name('users.user_list');
+        Route::get('/users/user-list', [AuthController::class, 'user_list'])->name('users.user_list');
     });
 
     // Role CRUD
@@ -53,14 +53,14 @@ Route::middleware(['authcheck'])->group(function () {
 
     // Module CRUD + Drag & Drop Order
     Route::prefix('modules')->middleware('check.permission:modules.index')->group(function () {
-    Route::get('/', [ModuleController::class, 'index'])->name('modules.index');
-    Route::get('/modules/create', [ModuleController::class, 'create'])->name('modules.create');
-    Route::post('/modules', [ModuleController::class, 'store'])->name('modules.store');
-    Route::get('/modules/{id}/edit', [ModuleController::class, 'edit'])->name('modules.edit');
-    Route::put('/modules/{id}', [ModuleController::class, 'update'])->name('modules.update');
-    Route::delete('/modules/{id}', [ModuleController::class, 'destroy'])->name('modules.destroy');
-    Route::post('/modules/order-update', [ModuleController::class, 'updateOrder'])->name('modules.order-update');
-    Route::get('/modules/list', [ModuleController::class, 'list'])->name('modules.list');
+        Route::get('/', [ModuleController::class, 'index'])->name('modules.index');
+        Route::get('/modules/create', [ModuleController::class, 'create'])->name('modules.create');
+        Route::post('/modules', [ModuleController::class, 'store'])->name('modules.store');
+        Route::get('/modules/{id}/edit', [ModuleController::class, 'edit'])->name('modules.edit');
+        Route::put('/modules/{id}', [ModuleController::class, 'update'])->name('modules.update');
+        Route::delete('/modules/{id}', [ModuleController::class, 'destroy'])->name('modules.destroy');
+        Route::post('/modules/order-update', [ModuleController::class, 'updateOrder'])->name('modules.order-update');
+        Route::get('/modules/list', [ModuleController::class, 'list'])->name('modules.list');
     });
 
     //Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
@@ -76,13 +76,13 @@ Route::middleware(['authcheck'])->group(function () {
     // Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])->name('permissions.update');
 
     Route::middleware('check.permission:permissions.assign-form')->group(function () {
-    Route::get('/permission-assign', [PermissionAssignController::class, 'index'])
-        ->name('permissions.assign-form');
-    Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])
-        ->name('permissions.get');
-    Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])
-        ->name('permissions.update');
-});
+        Route::get('/permission-assign', [PermissionAssignController::class, 'index'])
+            ->name('permissions.assign-form');
+        Route::get('/get-user-permissions', [PermissionAssignController::class, 'getUserPermissions'])
+            ->name('permissions.get');
+        Route::post('/update-permission', [PermissionAssignController::class, 'updatePermission'])
+            ->name('permissions.update');
+    });
 
 
 
